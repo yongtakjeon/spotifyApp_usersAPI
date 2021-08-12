@@ -55,7 +55,7 @@ app.use(cors());
 // --------------------------------
 
 app.get("/", (req, res) => {
-    res.send("This is users API.");
+    res.send("This is users API of Yongtak Music application.");
 });
 
 app.post("/api/user/register", (req, res) => {
