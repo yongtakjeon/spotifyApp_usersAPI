@@ -1,3 +1,5 @@
+// Online Link to User API: https://spotify-users-api.herokuapp.com/
+
 const express = require('express');
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
@@ -27,8 +29,10 @@ var strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
         // The following will ensure that all routes using 
         // passport.authenticate have a req.user._id & req.user.userName values 
         // that matches the request payload data
-        next(null, { _id: jwt_payload._id, 
-            userName: jwt_payload.userName }); 
+        next(null, {
+            _id: jwt_payload._id,
+            userName: jwt_payload.userName
+        });
     } else {
         next(null, false);
     }
@@ -76,7 +80,7 @@ app.post("/api/user/login", (req, res) => {
 
             // This "payload" object will be the content of the
             // JWT sent back to the client.
-            var payload = { 
+            var payload = {
                 _id: user._id,
                 userName: user.userName
             };
@@ -92,46 +96,46 @@ app.post("/api/user/login", (req, res) => {
 });
 
 // obtaining the list of favourites for the user
-app.get("/api/user/favourites", passport.authenticate('jwt', { session: false }), (req,res)=>{
+app.get("/api/user/favourites", passport.authenticate('jwt', { session: false }), (req, res) => {
 
     // If the client provides the valid token, below data will be sent to the client.
     // Otherwise, error code 500 will be sent.
-    userService.getFavourites(req.user._id).then((data)=>{
+    userService.getFavourites(req.user._id).then((data) => {
         res.json(data);
-    }).catch((msg)=>{
+    }).catch((msg) => {
         res.status(500).json({ "error": msg });
     });
 });
 
 // adding a specific favourite to the user's list of favourites
-app.put("/api/user/favourites/:id", passport.authenticate('jwt', { session: false }), (req,res) => {
+app.put("/api/user/favourites/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
 
-    userService.addFavourite(req.user._id, req.params.id).then((data)=>{
+    userService.addFavourite(req.user._id, req.params.id).then((data) => {
         res.json(data);
-    }).catch((msg)=>{
+    }).catch((msg) => {
         res.status(500).json({ "error": msg });
     });
 });
 
 // removing a specific favourite from the user's list of favourites
-app.delete("/api/user/favourites/:id", passport.authenticate('jwt', { session: false }), (req,res) => {
+app.delete("/api/user/favourites/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
 
-    userService.removeFavourite(req.user._id, req.params.id).then((data)=>{
+    userService.removeFavourite(req.user._id, req.params.id).then((data) => {
         res.json(data);
-    }).catch((msg)=>{
+    }).catch((msg) => {
         res.status(500).json({ "error": msg });
     });
 
- });
+});
 
 
 
 
 userService.connect()
-.then(() => {
-    app.listen(HTTP_PORT, () => { console.log("API listening on: " + HTTP_PORT) });
-})
-.catch((err) => {
-    console.log("unable to start the server: " + err);
-    process.exit();
-});
+    .then(() => {
+        app.listen(HTTP_PORT, () => { console.log("API listening on: " + HTTP_PORT) });
+    })
+    .catch((err) => {
+        console.log("unable to start the server: " + err);
+        process.exit();
+    });
